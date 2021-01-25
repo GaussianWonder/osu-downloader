@@ -18,11 +18,10 @@
     <body>
         <div class="container-fluid bg-dark max-height">
             <h1 class="text-center text-light p-3 unselectable" unselectable="on"> OSU Downloader </h1>
-            <a id="download-link" class="btn btn-outline-light" href="#" role="button">
-                <span class="unselectable" unselectable="on">
-                    Manual Download
-                </span>
-            </a>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="auto-download" checked>
+                <label class="form-check-label text-light" for="auto-download">Auto download</label>
+            </div>
         </div>
     </body>
 

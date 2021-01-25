@@ -1,48 +1,40 @@
-/**
- * Query the content script for the download link
- */
-const queryDownloadLink = () => {
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
-        var activeTab = tabs[0];
-        // chrome.tabs.sendMessage(activeTab.id, {"message": "fetch"});
+let settings = { // default state
+    autoDownload: true,
+};
+
+const notifyTabsToUpdateSettings = () => {
+    chrome.tabs.query({currentWindow: true}, (tabs) => {
+        tabs.forEach(tab => {
+            chrome.tabs.sendMessage(
+                tab.id,
+                {
+                    type: "cs-update-settings",
+                    data: settings,
+                },
+            );
+        });
     });
-}
+}    
 
-// Init query + se interval setup
-queryDownloadLink();
-setInterval(queryDownloadLink, 650);
-
-// Elements and relevant data
-let downloadLinkAnchorElement = document.getElementById('download-link');
-let previousDownloaded = '';
-let downloadIDS = [];
-
-downloadLinkAnchorElement.addEventListener("click", (evt) => {
-    evt.preventDefault();
-    manualDownload();
-    return false;
+let autoDownloadElement = document.getElementById('auto-download');
+autoDownloadElement.addEventListener('change', (event) => {
+    settings.autoDownload = event.target.checked;
+    chrome.storage.sync.set({settings: settings}, () => {
+        notifyTabsToUpdateSettings();
+    });
 });
 
-// Listener for the download link from the content script
-// chrome.extension.onRequest.addListener(function(downloadLink) {
-//     if((typeof downloadLink === 'string' || downloadLink instanceof String) && downloadLink.length !== 0) {
-//         if(downloadLink === previousDownloaded) // do not redownload the same thing again
-//             return;
-        
-//         previousDownloaded = downloadLink;
-//         downloadLinkAnchorElement.setAttribute('href', downloadLink);
-
-//         chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
-//             var activeTab = tabs[0];
-//             // chrome.tabs.sendMessage(activeTab.id, {"message": "download"});
-//         });
-//     }
-// });
-
-// Button on click callback
-const manualDownload = () => {
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs) {
-        var activeTab = tabs[0];
-        // chrome.tabs.sendMessage(activeTab.id, {"message": "download"});
-    });
-}
+/**
+ * Retreive initial settings
+ */
+chrome.storage.sync.get(['settings'], (data) => {
+    if(data.settings !== undefined) { // might happen just the first time these get synced
+        settings = data.settings;
+        autoDownloadElement.checked = settings.autoDownload;
+    }
+    else { // whatever is stored in the storage is broken, update it
+        chrome.storage.sync.set({settings: settings}, () => {
+            notifyTabsToUpdateSettings();
+        });
+    }
+});

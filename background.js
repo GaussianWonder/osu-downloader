@@ -1,4 +1,4 @@
-// Suppress the default osu download, and replace it
+// Suggest a new download folder for any osu related downloads
 chrome.downloads.onDeterminingFilename.addListener(function(downloadItem, __suggest) {
     const regexFilter = /https:\/\/(osu|bm\d*).ppy.sh\//gi;
 

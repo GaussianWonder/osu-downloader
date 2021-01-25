@@ -7,8 +7,10 @@
         "1200": "icons/icon-1200x1200.png"
     },
     "permissions": [
+        "tabs",
         "activeTab",
-        "downloads"
+        "downloads",
+        "storage"
     ],
     "content_scripts": [
         {

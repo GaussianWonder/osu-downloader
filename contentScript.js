@@ -1,3 +1,14 @@
+let settings = undefined; // this must be synced
+
+/**
+ * Retreive settings
+ */
+chrome.storage.sync.get(['settings'], (data) => {
+    settings = data.settings;
+    fetchBaseDOMElement();
+});
+// no need for set intervals here, from now on it will be notified when the extension UI is changed
+
 /**
  * Utility funtion
  * @param {*} path String containing the XPATH to the desired element
@@ -32,10 +43,8 @@ const fetchDownloadLink = (beatMapHeader) => {
     }
 
     downloadLink = withoutVideoDownloadAnchorElement.href;
-    withoutVideoDownloadAnchorElement.click();
-    // When reaching this guy, 'manual' will be set to false
-    // Note: this is extension-wide, so any downloads started when manual == true will receive the Save As prompt
-    // Manual should be only used when automatic is disabled :))
+    if(settings.autoDownload === true) // trigger a download only if autodownload is on
+        withoutVideoDownloadAnchorElement.click();
 }
 
 /**
@@ -65,17 +74,20 @@ const fetchBaseDOMElement = () => {
     else 
         fetchDownloadLink(beatMapSetHeaderElement);
 }
-fetchBaseDOMElement();
 
-chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-    if(request.message === "fetch") {
-        // chrome.extension.sendRequest(downloadLink);
-    }
-    else if(request.message === "download") {
-        fetchBaseDOMElement();
-        withoutVideoDownloadAnchorElement.click();
-    }
-    else if(request.message === "update") {
-        fetchBaseDOMElement();
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    switch(request.message.type) {
+        case "cs-data-request":
+            break;
+        case "cs-force-download":
+            fetchBaseDOMElement();
+            withoutVideoDownloadAnchorElement.click();
+            break;
+        case "cs-force-update":
+            fetchBaseDOMElement();
+            break;
+        case "cs-update-settings":
+            settings = request.message.data;
+            break;
     }
 });
