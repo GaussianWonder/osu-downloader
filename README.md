@@ -12,6 +12,7 @@ A browser extension that auto-downloads [no-video] beatmaps once you visit a bea
 
 # Tips and Tricks
 * Use the middle click to spawn beatmaps in separate windows, the extension will do the work
+* Use [this](https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html) handy tool to create symlinks
 
 # TODO
 >A list of things i want to complete before publishing it on formus & chrome extension store
