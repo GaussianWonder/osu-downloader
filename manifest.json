@@ -1,0 +1,27 @@
+{
+    "name": "OSU Downloader",
+    "version": "0.0.0.1",
+    "manifest_version": 2,
+    "description": "A Chromium extension that downloads osu beatmaps and moves them directly into the songs folder.",
+    "icons": {
+        "1200": "icons/icon-1200x1200.png"
+    },
+    "permissions": [
+        "activeTab",
+        "downloads"
+    ],
+    "content_scripts": [
+        {
+            "matches": ["https://osu.ppy.sh/beatmapsets/*"],
+            "run_at": "document_idle",
+            "js": ["contentScript.js"]
+        }
+    ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_popup": "popup/popup.html"
+    }
+}
