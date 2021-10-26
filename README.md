@@ -1,6 +1,13 @@
 # osu-downloader
 A browser extension that auto-downloads [no-video] beatmaps once you visit a beatmap download page.
 
+```text
+This is now deprecated.
+This will be rewritten here: https://github.com/GaussianWonder/osu-utility
+```
+
+[New Repo](https://github.com/GaussianWonder/osu-utility)
+
 # Usage
 * Let it run :)
 * It will automatically start downloading a beatmap once the page is fully loaded.
